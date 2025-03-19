@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: sentosa-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: testing_sentosa_db
+      MYSQL_USER: guest
+      MYSQL_PASSWORD: password1234
+    ports:
+      - "3307:3306" # Hindari bentrok dengan MySQL lokal
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  api:
+    build: .
+    container_name: sentosa-api
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://guest:password1234@db:3306/testing_sentosa_db
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    command: [ "sh", "-c", "npx prisma migrate deploy && pm2-runtime start ecosystem.config.cjs" ]
+
+volumes:
+  mysql_data:
