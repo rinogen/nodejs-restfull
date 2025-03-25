@@ -1,3 +1,11 @@
 node_modules
 .idea
 .env
+
+# Ignore actual data volumes
+/volumes/
+**/mysql_data/
+/nginx/logs/
+
+# Except example configs
+!.env.example
