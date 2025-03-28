@@ -1,11 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
-
 
 datasource db {
   provider = "mysql"
@@ -29,9 +25,10 @@ model Contact {
   email      String?   @db.VarChar(200)
   phone      String?   @db.VarChar(20)
   username   String    @db.VarChar(100)
-  user       User      @relation(fields: [username], references: [username])
   addresses  Address[]
+  user       User      @relation(fields: [username], references: [username])
 
+  @@index([username], map: "contacts_username_fkey")
   @@map("contacts")
 }
 
@@ -45,5 +42,6 @@ model Address {
   contact_id  Int
   contact     Contact @relation(fields: [contact_id], references: [id])
 
+  @@index([contact_id], map: "addresses_contact_id_fkey")
   @@map("addresses")
 }
