@@ -1,7 +1,7 @@
 node_modules
 .idea
-/docker/.env.prod
-/docker/.env.dev
+.env.prod
+.env.dev
 
 # Ignore actual data volumes
 /volumes/
