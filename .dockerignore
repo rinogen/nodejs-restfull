@@ -2,8 +2,13 @@ node_modules
 npm-debug.log
 yarn-error.log
 .DS_Store
-.env
-docker-compose.override.yml
 .vscode
 .idea
 .git
+
+uploads
+logs
+.env*
+Dockerfile.dev
+Dockerfile.prod
+docker-compose.yml

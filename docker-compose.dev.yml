@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  mysql_data_dev:
+
+services:
+  db-dev:
+    image: mysql:latest
+    container_name: sentosa-db-dev
+    restart: always
+    env_file:
+      - .env.dev
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    ports:
+      - "3308:3306" 
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mynetwork
+
+  api-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: sentosa-api-dev
+    restart: always
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    env_file:
+      - .env.dev
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+    command: [ "sh", "-c", "npx prisma migrate deploy && pm2-runtime start ecosystem.config.cjs" ]
+    networks:
+      - mynetwork

@@ -1,110 +1,21 @@
 version: '3.8'
 
+networks:
+  mynetwork:
+    driver: bridge
+
 services:
-  db-dev:
-    image: mysql:latest
-    container_name: sentosa-db-dev
-    restart: always
-    env_file:
-      - ./docker-env/.env.dev
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
-    ports:
-      - "3308:3306" 
-    volumes:
-      - mysql_data_dev:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    networks:
-      - mynetwork
-  db-prod:
-    image: mysql:latest
-    container_name: sentosa-db-prod
-    restart: always
-    env_file:
-      - ./docker-env/.env.prod
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASS}
-    ports:
-      - "3307:3306" 
-    volumes:
-      - mysql_data_prod:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    networks:
-      - mynetwork
-
-  api-dev:
-    build: .
-    container_name: sentosa-api-dev
-    restart: always
-    depends_on:
-      db-dev:
-        condition: service_healthy
-    env_file:
-      - ./docker/.env.dev
-    ports:
-      - "4000:3000"
-    volumes:
-      - .:/app
-    command: [ "sh", "-c", "npx prisma migrate deploy && pm2-runtime start ecosystem.config.cjs" ]
-    networks:
-      - mynetwork
-
-  api-prod:
-    build: .
-    container_name: sentosa-api-prod
-    restart: always
-    depends_on:
-      db-prod:
-        condition: service_healthy
-    env_file:
-      - ./docker/.env.prod
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-    command: [ "sh", "-c", "npx prisma migrate deploy && pm2-runtime start ecosystem.config.cjs" ]
-    networks:
-      - mynetwork
-
-
   nginx:
     image: nginx:latest
-    container_name: nginx_container
+    container_name: nginx_proxy
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/nginx/conf.d:/etc/nginx/conf.d:ro
-      - /etc/nginx/sites-available:/etc/nginx/sites-available:ro
-      - /etc/nginx/sites-enabled:/etc/nginx/sites-enabled:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/maintenance:/var/www/html:ro
       - /etc/letsencrypt:/etc/letsencrypt
-      - /var/log/nginx:/var/log/nginx
-    depends_on:
-      - api-prod
-      - api-dev
     networks:
       - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
-
-volumes:
-  mysql_data_dev:
-  mysql_data_prod:

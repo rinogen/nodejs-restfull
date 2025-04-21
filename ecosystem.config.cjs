@@ -1,26 +1,17 @@
 module.exports = {
     apps: [
         {
-            name: "sentosa-api-prod",
+            name: process.env.NODE_ENV === 'production'
+                ? "sentosa-api-prod"
+                : "sentosa-api-dev",
             script: "src/main.js",
             instances: 1,
             autorestart: true,
             watch: false,
             env: {
-                NODE_ENV: "production",
-                PORT: process.env.PORT, // Port untuk API Production
+                NODE_ENV: process.env.NODE_ENV || "development",
+                PORT: process.env.PORT || 4000,
             },
-        },
-        {
-            name: "sentosa-api-dev",
-            script: "src/main.js",
-            instances: 1,
-            autorestart: true,
-            watch: false,
-            env: {
-                NODE_ENV: "development",
-                PORT: process.env.PORT, // Port untuk API Development
-            },
-        },
+        }
     ],
 };
