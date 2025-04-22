@@ -12,7 +12,8 @@ COMPOSE_NGINX=docker-compose.yml
 # ===== Development =====
 
 dev-up:
-	docker-compose --env-file $(ENV_DEV) -f $(COMPOSE_DEV) up -d --build
+	docker-compose --env-file .env.dev -f docker-compose.dev.yml down --remove-orphans
+	docker-compose --env-file .env.dev -f docker-compose.dev.yml up -d --build
 
 dev-down:
 	docker-compose --env-file $(ENV_DEV) -f $(COMPOSE_DEV) down
