@@ -3,8 +3,6 @@ pipeline {
 
   environment {
     MAKE_CMD = 'make'
-    ENV_DEV = credentials('env-dev-secret')   // file untuk dev
-    ENV_PROD = credentials('env-prod-secret') // file untuk prod
   }
 
   stages {
@@ -26,11 +24,13 @@ pipeline {
       steps {
         script {
           if (env.BRANCH_NAME == 'main') {
-            echo "Generate file .env.prod dari Jenkins Credentials"
-            writeFile file: '.env.prod', text: "${ENV_PROD}"
+            withCredentials([file(credentialsId: 'env-prod-secret', variable: 'ENV_PROD_FILE')]) {
+              sh 'cp "$ENV_PROD_FILE" .env.prod'
+            }
           } else if (env.BRANCH_NAME == 'dev') {
-            echo "Generate file .env.dev dari Jenkins Credentials"
-            writeFile file: '.env.dev', text: "${ENV_DEV}"
+            withCredentials([file(credentialsId: 'env-dev-secret', variable: 'ENV_DEV_FILE')]) {
+              sh 'cp "$ENV_DEV_FILE" .env.dev'
+            }
           } else {
             echo "Branch ${env.BRANCH_NAME} tidak butuh file .env"
           }
