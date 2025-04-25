@@ -15,7 +15,7 @@ dev-up:
 	docker-compose --env-file $(ENV_DEV) -f $(COMPOSE_DEV) up -d --build
 
 dev-down:
-	docker-compose --env-file $(ENV_DEV) -f $(COMPOSE_DEV) down
+	docker-compose --env-file $(ENV_DEV) -f $(COMPOSE_DEV) down 
 
 dev-logs:
 	docker logs -f sentosa-api-dev

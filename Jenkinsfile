@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        echo "Jalankan pipeline untuk branch: ${env.BRANCH_NAME}"
+        echo "Jalankan pipeline untuk branch main"
         checkout scm
       }
     }
@@ -20,18 +20,22 @@ pipeline {
       }
     }
 
-    stage('Deploy') {
+    stage('Setup Environment File') {
       steps {
-        script {
-          if (env.BRANCH_NAME == 'main') {
-            sh "${MAKE_CMD} prod-up"
-          } else if (env.BRANCH_NAME == 'dev') {
-            sh "${MAKE_CMD} dev-up"
-          } else {
-            echo "Branch ${env.BRANCH_NAME} tidak didukung untuk deploy."
-          }
+        withCredentials([file(credentialsId: 'env-prod-secret', variable: 'ENV_PROD_FILE')]) {
+          sh 'cp "$ENV_PROD_FILE" .env.prod'
         }
       }
     }
+
+    stage('Deploy') {
+      steps {
+        sh "${MAKE_CMD} prod-up"
+      }
+    }
+  }
+
+  when {
+    branch 'main'
   }
 }

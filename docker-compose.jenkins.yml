@@ -2,19 +2,21 @@ version: '3.8'
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
     container_name: jenkins
     user: root
     ports:
       - "8090:8080"
     volumes:
+      - .:/app
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-    - JENKINS_OPTS=--prefix=/jenkins
+      - JENKINS_OPTS=--prefix=/jenkins
     networks:
       - nodejs-restfull_mynetwork
-
 volumes:
   jenkins_home:
 
