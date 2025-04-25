@@ -4,25 +4,25 @@ FROM node:20-bookworm
 # Set work directory di dalam container
 WORKDIR /app
 
-# Copy file dependency
+# Copy package.json dan package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy folder prisma terlebih dahulu
+# Copy folder prisma (ini yang penting!)
 COPY prisma ./prisma
+
+# Copy seluruh source code ke dalam container
+COPY . .
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Copy seluruh source code lainnya
-COPY . .
-
 # Install PM2 jika digunakan
 RUN npm install pm2 -g
 
-# Expose port (ganti sesuai backend-mu)
+# Expose port
 EXPOSE 3000
 
 # Jalankan aplikasi dengan PM2
