@@ -2,7 +2,8 @@ version: '3.8'
 
 networks:
   mynetwork:
-    driver: bridge
+    external: true
+    name: nodejs-restfull_mynetwork
 
 volumes:
   mysql_data_prod:
