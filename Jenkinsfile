@@ -51,5 +51,17 @@ pipeline {
         }
       }
     }
+
+    stage('Prisma Generate') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'main') {
+            sh 'docker-compose --env-file .env.prod -f docker-compose.prod.yml exec api-prod npx prisma generate'
+          } else if (env.BRANCH_NAME == 'dev') {
+            sh 'docker-compose --env-file .env.dev -f docker-compose.dev.yml exec api-dev npx prisma generate'
+          }
+        }
+      }
+    }
   }
 }
