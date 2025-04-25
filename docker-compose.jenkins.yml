@@ -16,11 +16,12 @@ services:
     environment:
       - JENKINS_OPTS=--prefix=/jenkins
     networks:
-      - nodejs-restfull_mynetwork
+      - mynetwork  # Ubah ke nama yang sama dengan yang didefinisikan di bawah
+
 volumes:
   jenkins_home:
 
 networks:
-  mynetwork:
-    name : nodejs-restfull_mynetwork
+  mynetwork:  # Nama network di docker-compose
+    name: nodejs-restfull_mynetwork  # Nama asli network di sistem
     external: true
