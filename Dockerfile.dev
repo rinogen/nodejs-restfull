@@ -4,17 +4,20 @@ FROM node:20-bookworm
 # Set work directory di dalam container
 WORKDIR /app
 
-# Copy package.json dan package-lock.json
+# Copy file dependency
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy seluruh source code ke dalam container
-COPY . .
+# Copy folder prisma terlebih dahulu
+COPY prisma ./prisma
 
 # Generate Prisma Client
 RUN npx prisma generate
+
+# Copy seluruh source code lainnya
+COPY . .
 
 # Install PM2 jika digunakan
 RUN npm install pm2 -g
@@ -23,4 +26,4 @@ RUN npm install pm2 -g
 EXPOSE 3000
 
 # Jalankan aplikasi dengan PM2
-CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]# Gunakan base image Node.js berbasis Debian
+CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]
