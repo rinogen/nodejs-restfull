@@ -34,6 +34,9 @@ prod-up:
 prod-down:
 	docker-compose --env-file $(ENV_PROD) -f $(COMPOSE_PROD) down
 
+prod-down-orphans:
+	docker-compose --env-file $(ENV_PROD) -f $(COMPOSE_PROD) down --remove-orphans
+
 prod-logs:
 	docker logs -f sentosa-api-prod
 

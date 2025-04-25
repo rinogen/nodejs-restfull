@@ -18,6 +18,7 @@ services:
       - ./nginx/conf.d/dev.cms.sentosafishery.com.conf:/etc/nginx/conf.d/dev.cms.sentosafishery.com.conf:ro
       - ./nginx/conf.d/dev.sentosafishery.com.conf:/etc/nginx/conf.d/dev.sentosafishery.com.conf:ro
       - ./nginx/conf.d/staging.sentosafishery.com.conf:/etc/nginx/conf.d/staging.sentosafishery.com.conf:ro
+      - ./nginx/conf.d/api.sentosafishery.com.conf:/etc/nginx/conf.d/api.sentosafishery.com.conf:ro
       - ./nginx/maintenance:/var/www/html:ro
       - /etc/letsencrypt:/etc/letsencrypt
     networks:
