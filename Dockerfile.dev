@@ -13,6 +13,9 @@ RUN npm install
 # Copy folder prisma (ini yang penting!)
 COPY prisma ./prisma
 
+RUN echo "=== DEBUG PRISMA FOLDER ===" && ls -la ./prisma
+RUN cat ./prisma/schema.prisma
+
 # Copy seluruh source code ke dalam container
 COPY . .
 
