@@ -45,7 +45,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-    command: [ "sh", "-c", "npx prisma migrate deploy && pm2-runtime start ecosystem.config.cjs" ]
+      # - .:/app
+      - /app/node_modules
+    command: [ "sh", "-c", "npx prisma migrate deploy --schema=/app/prisma/schema.prisma && pm2-runtime start ecosystem.config.cjs" ]
     networks:
       - mynetwork
