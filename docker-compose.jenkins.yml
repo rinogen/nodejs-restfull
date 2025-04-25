@@ -21,5 +21,6 @@ volumes:
   jenkins_home:
 
 networks:
-  nodejs-restfull_mynetwork:
+  mynetwork:
+    name : nodejs-restfull_mynetwork
     external: true
