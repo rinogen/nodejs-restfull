@@ -60,9 +60,9 @@ nginx-restart:
 
 # Build and run the Jenkins container
 jenkins-up:
-	docker compose -f docker compose.jenkins.yml up -d
+	docker compose -f docker-compose.jenkins.yml up -d
 jenkins-down:
-	docker compose -f docker compose.jenkins.yml down
+	docker compose -f docker-compose.jenkins.yml down
 jenkins-logs:
 	docker logs -f jenkins
 jenkins-restart:

@@ -11,7 +11,7 @@ services:
       - "8090:8080"
     volumes:
       - .:/app
-      - jenkins_home:/var/jenkins_home
+      - /home/rinoaugenio/jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - JENKINS_OPTS=--prefix=/jenkins
