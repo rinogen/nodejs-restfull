@@ -9,11 +9,13 @@ datasource db {
 }
 
 model User {
-  username String    @id @db.VarChar(100)
+  id       Int      @id @default(autoincrement())
+  username String    @unique @db.VarChar(100)
   password String    @db.VarChar(100)
   name     String    @db.VarChar(100)
   token    String?   @db.VarChar(100)
   contacts Contact[]
+  blogs    Blog[]
 
   @@map("users")
 }
@@ -26,9 +28,10 @@ model Contact {
   phone      String?   @db.VarChar(20)
   username   String    @db.VarChar(100)
   addresses  Address[]
-  user       User      @relation(fields: [username], references: [username])
+  user_id    Int
+  user       User      @relation(fields: [user_id], references: [id])
 
-  @@index([username], map: "contacts_username_fkey")
+  @@index([username], map: "contacts_username_idx")
   @@map("contacts")
 }
 
@@ -44,4 +47,18 @@ model Address {
 
   @@index([contact_id], map: "addresses_contact_id_fkey")
   @@map("addresses")
+}
+
+model Blog {
+  id            Int      @id @default(autoincrement())
+  title         String   @db.VarChar(100)
+  slug          String   @unique @db.VarChar(120)
+  content       String   @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  author_id     Int
+  author        User     @relation(fields: [author_id], references: [id])
+
+  @@index([author_id])
+  @@map("blogs")
 }

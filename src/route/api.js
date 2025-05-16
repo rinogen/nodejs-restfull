@@ -2,7 +2,8 @@ import express from "express";
 import userController from "../controller/user-controller.js";
 import contactController from "../controller/contact-controller.js";
 import addressController from "../controller/address-controller.js";
-import {authMiddleware} from "../middleware/auth-middleware.js";
+import blogController from "../controller/blog-controller.js";
+import { authMiddleware } from "../middleware/auth-middleware.js";
 
 const userRouter = new express.Router();
 userRouter.use(authMiddleware);
@@ -26,6 +27,11 @@ userRouter.put('/api/contacts/:contactId/addresses/:addressId', addressControlle
 userRouter.delete('/api/contacts/:contactId/addresses/:addressId', addressController.remove);
 userRouter.get('/api/contacts/:contactId/addresses', addressController.list);
 
+
+// Blog API
+userRouter.post('/api/blogs', blogController.create);
+userRouter.get('/api/blogs/:slug', blogController.get);
+userRouter.put('/api/blogs/:slug', blogController.update);
 export {
     userRouter
 }
